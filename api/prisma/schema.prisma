@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  ESTABLISHMENT
+}
+
+model Establishment {
+  id                  String      @id @default(uuid())
+  role                Role        @default(ESTABLISHMENT) @map("role")
+  cnpj                String      @unique @map("cnpj")
+  socialReason        String      @map("social_reason")
+  tradingName         String      @map("trading_name")
+  responsibleName     String      @map("name")
+  cpf                 String      @unique @map("cpf")
+  civilStatus         String      @map("civil_status")
+  rg                  String      @unique @map("rg")
+  rgUf                String      @map("rg_uf")
+  rgDate              DateTime    @map("rg_date")
+  gender              String      @map("gender")
+  dateOfBirth         DateTime    @map("date_of_birth")
+  email               String      @unique @map("email")
+  password            String      @map("password")
+  phone               String      @map("phone")
+  website             String?     @map("website")
+  instagram           String?     @map("instagram")
+  cnae                Int         @unique @map("cnae")
+  street              String      @map("street")
+  number              String      @map("number")
+  complement          String?     @map("complement")
+  neighborhood        String      @map("neighborhood")
+  city                String      @map("city")
+  state               String      @map("state")
+  zipCode             String      @map("zipcode")
+  companyStreet       String?     @map("company_street")
+  companyNumber       String?     @map("company_number")
+  companyComplement   String?     @map("company_complement")
+  companyNeighborhood String?     @map("company_neighborhood")
+  companyCity         String?     @map("company_city")
+  companyState        String?     @map("company_state")
+  companyZipCode      String?     @map("company_zipcode")
+  stateRegistration   String?     @unique @map("state_registration")
+  foundedAt           DateTime?   @map("founded_at")
+  cadasturExpiresAt   DateTime?   @map("cadastur_expires_at")
+  bankAccountType     String?     @map("bank_account_type")
+  bankCode            String?     @map("bank_code")
+  bankAgency          String?     @map("bank_agency")
+  bankAgencyDigit     String?     @map("bank_agency_digit")
+  bankAccountHolder   String?     @map("bank_account_holder")
+  bankAccountNumber   String?     @unique @map("bank_account_number")
+  bankAccountDigit    String?     @map("bank_account_digit")
+  cardBrand           String?     @map("card_brand")
+  status              String?     @default("PENDING") @map("registration_status")
+  createdAt           DateTime?   @default(now()) @map("created_at")
+  updatedAt           DateTime?   @updatedAt @map("updated_at")
+  Documents           Documents[]
+
+  @@map("establishment")
+}
+
+model Documents {
+  id      String   @id @default(uuid())
+  name    String
+  path    String
+  addedAt DateTime @default(now())
+
+  establishment    Establishment @relation(fields: [establishment_id], references: [id], onDelete: Cascade)
+  establishment_id String
+
+  @@map("documentos_clientes")
+}

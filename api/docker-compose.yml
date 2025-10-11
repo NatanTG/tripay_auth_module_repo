@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: tripay_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+    restart: unless-stopped
+    networks:
+      - tripay_network
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: tripay_db
+    environment:
+      POSTGRES_USER: tripay
+      POSTGRES_PASSWORD: tripay123
+      POSTGRES_DB: tripaydb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - tripay_network
+
+volumes:
+  postgres_data:
+
+networks:
+  tripay_network:
+    driver: bridge
